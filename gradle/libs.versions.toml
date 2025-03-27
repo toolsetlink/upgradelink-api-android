@@ -1,5 +1,5 @@
 [versions]
-agp = "8.8.0-alpha05"
+agp = "8.2.1"
 kotlin = "2.0.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -31,7 +31,6 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 runner = { group = "com.android.support.test", name = "runner", version.ref = "runner" }
 espresso-core = { group = "com.android.support.test.espresso", name = "espresso-core", version.ref = "espressoCoreVersion" }
 appcompat-v7 = { group = "com.android.support", name = "appcompat-v7", version.ref = "appcompatV7" }
-upgradelink-api-android = { module = "com.github.toolsetlink:upgradelink-api-android", version.ref = "upgradelinkApiAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -26,7 +26,6 @@ android {
 }
 
 dependencies {
-    implementation libs.upgradelink.api.android
     implementation libs.appcompat.v7
     testImplementation libs.junit
     androidTestImplementation libs.runner
