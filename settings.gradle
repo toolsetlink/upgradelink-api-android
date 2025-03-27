@@ -1,12 +1,5 @@
 pluginManagement {
     repositories {
-        gradlePluginPortal()       // Gradle 官方插件仓库
-        google()                   // Android 插件仓库
-        mavenCentral()             // Maven 中央仓库
-        maven {
-            url "https://maven.aliyun.com/repository/public"
-        }
-        maven { url "https://jitpack.io" }
         google {
             content {
                 includeGroupByRegex("com\\.android.*")
@@ -14,14 +7,13 @@ pluginManagement {
                 includeGroupByRegex("androidx.*")
             }
         }
+        mavenCentral()
+        gradlePluginPortal()
     }
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        maven {
-            url "https://maven.aliyun.com/repository/public"
-        }
         google()
         mavenCentral()
         maven { url 'https://www.jitpack.io' }
@@ -29,5 +21,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "upgradelink-api-android"
-enableFeaturePreview("VERSION_CATALOGS")
+include ':app'
 include ':api'
