@@ -1,5 +1,7 @@
 package com.toolsetlink.upgradelink.api;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.toolsetlink.upgradelink.api.models.FileUpgradeRequest;
 import com.toolsetlink.upgradelink.api.models.FileUpgradeResponse;
@@ -11,6 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import okhttp3.Call;
+import okhttp3.EventListener;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -20,7 +25,7 @@ import okhttp3.Response;
 public class Client {
     public static final String ENDPOINT = "api.upgrade.toolsetlink.com";
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-    private static final OkHttpClient client = new OkHttpClient();
+    private static OkHttpClient client = new OkHttpClient();
     private static final Gson gson = new Gson();
     private static final ExecutorService executorService = Executors.newFixedThreadPool(5);
 
@@ -64,10 +69,10 @@ public class Client {
         Map<String, String> headers = new HashMap<>();
         headers.put("host", ENDPOINT);
         headers.put("content-type", "application/json");
-        headers.put("x-timestamp", timestamp);
-        headers.put("x-nonce", nonce);
-        headers.put("x-accesskey", accessKeyId);
-        headers.put("x-signature", signature);
+        headers.put("X-Timestamp", timestamp);
+        headers.put("X-Nonce", nonce);
+        headers.put("X-AccessKey", accessKeyId);
+        headers.put("X-Signature", signature);
 
         RequestBody requestBody = RequestBody.create(bodyStr, JSON);
         Request httpRequest = new Request.Builder()
@@ -76,12 +81,28 @@ public class Client {
                 .headers(okhttp3.Headers.of(headers))
                 .build();
 
+//        client = new OkHttpClient.Builder()
+//                .eventListener(new EventListener() {
+//                    @Override
+//                    public void requestHeadersEnd(Call call, Request request) {
+//                        System.out.println(request.headers());
+//                    }
+//
+//                    @Override
+//                    public void requestBodyEnd(Call call, long byteCount) {
+//                    }
+//                })
+//                .build();
+
         Response response = client.newCall(httpRequest).execute();
         if (response.isSuccessful()) {
+            assert response.body() != null;
             String responseData = response.body().string();
             return gson.fromJson(responseData, UrlUpgradeResponse.class);
         } else {
-            throw new IOException("Unexpected code " + response);
+            assert response.body() != null;
+            String responseData = response.body().string();
+            throw new IOException("Unexpected msg " + responseData);
         }
     }
 
@@ -95,10 +116,10 @@ public class Client {
         Map<String, String> headers = new HashMap<>();
         headers.put("host", ENDPOINT);
         headers.put("content-type", "application/json");
-        headers.put("x-timestamp", timestamp);
-        headers.put("x-nonce", nonce);
-        headers.put("x-accesskey", accessKeyId);
-        headers.put("x-signature", signature);
+        headers.put("X-Timestamp", timestamp);
+        headers.put("X-Nonce", nonce);
+        headers.put("X-AccessKey", accessKeyId);
+        headers.put("X-Signature", signature);
 
         RequestBody requestBody = RequestBody.create(bodyStr, JSON);
         Request httpRequest = new Request.Builder()
@@ -109,10 +130,13 @@ public class Client {
 
         Response response = client.newCall(httpRequest).execute();
         if (response.isSuccessful()) {
+            assert response.body() != null;
             String responseData = response.body().string();
             return gson.fromJson(responseData, FileUpgradeResponse.class);
         } else {
-            throw new IOException("Unexpected code " + response);
+            assert response.body() != null;
+            String responseData = response.body().string();
+            throw new IOException("Unexpected msg " + responseData);
         }
     }
 
