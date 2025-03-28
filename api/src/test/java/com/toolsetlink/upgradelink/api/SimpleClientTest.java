@@ -53,8 +53,8 @@ public class SimpleClientTest {
                 "uJ47NPeT7qjLa1gL3sVHqw",
                 1,
                 0,
-                "android.os.Build.MODEL",
-                "android.os.Build.FINGERPRINT"
+                "",
+                ""
         ), callback);
 
         assertTrue(latch.await(1, TimeUnit.SECONDS));
@@ -92,8 +92,8 @@ public class SimpleClientTest {
                 "123123123",
                 1,
                 0,
-                "android.os.Build.MODEL",
-                "android.os.Build.FINGERPRINT"
+                "",
+                ""
         ), callback);
 
         assertTrue(latch.await(1, TimeUnit.SECONDS));
