@@ -67,7 +67,8 @@ dependencies {
     implementation "androidx.multidex:multidex:2.0.1"
 
     // 版本目录引用（需检查 libs.versions.toml 配置）
-    implementation libs.appcompat.v7  // 建议改用 AndroidX 版本
+//    implementation libs.appcompat.v7  // 建议改用 AndroidX 版本
+
     testImplementation libs.junit
     androidTestImplementation libs.runner
     androidTestImplementation libs.espresso.core
