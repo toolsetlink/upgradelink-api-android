@@ -11,9 +11,35 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class SignatureUtils {
+//    public static String timeRFC3339() {
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.US);
+//        return sdf.format(new Date());
+//    }
+
     public static String timeRFC3339() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.US);
-        return sdf.format(new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+        Date date = new Date();
+        String formattedDate = sdf.format(date);
+
+        // 获取时区偏移量
+        Calendar calendar = Calendar.getInstance();
+        TimeZone timeZone = calendar.getTimeZone();
+        int offsetInMillis = timeZone.getOffset(calendar.getTimeInMillis());
+
+        // 计算小时和分钟的偏移量
+        int offsetHours = Math.abs(offsetInMillis) / (1000 * 60 * 60);
+        int offsetMinutes = Math.abs(offsetInMillis) / (1000 * 60) % 60;
+
+        // 构建时区偏移量字符串
+        String offsetString;
+        if (offsetInMillis >= 0) {
+            offsetString = String.format("+%02d:%02d", offsetHours, offsetMinutes);
+        } else {
+            offsetString = String.format("-%02d:%02d", offsetHours, offsetMinutes);
+        }
+
+        // 拼接日期和时区偏移量
+        return formattedDate + offsetString;
     }
 
     public static String generateNonce() {

@@ -50,7 +50,7 @@ public class SimpleClientTest {
         };
 
         client.getUrlUpgrade(new UrlUpgradeRequest(
-                "uJ47NPeT7qjLa1gL3sVHqw",
+                "OpggWISrLVRFa5y04LzkwA",
                 1,
                 0,
                 "",
