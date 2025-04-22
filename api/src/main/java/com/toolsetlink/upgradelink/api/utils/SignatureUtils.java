@@ -1,21 +1,16 @@
 // SignatureUtils.java
 package com.toolsetlink.upgradelink.api.utils;
 
-import android.os.Build;
+import android.annotation.SuppressLint;
 
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class SignatureUtils {
-//    public static String timeRFC3339() {
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.US);
-//        return sdf.format(new Date());
-//    }
 
+    @SuppressLint("DefaultLocale")
     public static String timeRFC3339() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
         Date date = new Date();
@@ -42,9 +37,8 @@ public class SignatureUtils {
         return formattedDate + offsetString;
     }
 
+    // 生成8字节随机数据并转换为16位十六进制字符串
     public static String generateNonce() {
-//        return UUID.randomUUID().toString();
-        // 生成8字节随机数据并转换为16位十六进制字符串
         SecureRandom random = new SecureRandom();
         byte[] bytes = new byte[8];
         random.nextBytes(bytes);

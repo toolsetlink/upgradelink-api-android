@@ -1,15 +1,11 @@
 package com.toolsetlink.upgradelink.api;
 
 import com.google.gson.Gson;
-import com.toolsetlink.upgradelink.api.Client;
 import com.toolsetlink.upgradelink.api.models.*;
 import com.toolsetlink.upgradelink.api.Client.Callback;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -18,12 +14,15 @@ import static org.junit.Assert.*;
 public class SimpleClientTest {
 
     private Client client;
-    private final String accessKeyId = "mui2W50H1j-OC4xD6PgQag";
-    private final String accessKeySecret = "PEbdHFGC0uO_Pch7XWBQTMsFRxKPQAM2565eP8LJ3gc";
 
     @Before
     public void setUp() {
-        client = new Client(accessKeyId, accessKeySecret);
+        Config config = new Config();
+        String accessKey = "mui2W50H1j-OC4xD6PgQag";
+        config.setAccessKey(accessKey);
+        String secretKey = "PEbdHFGC0uO_Pch7XWBQTMsFRxKPQAM2565eP8LJ3gc";
+        config.setSecretKey(secretKey);
+        client = new Client(config);
     }
 
     @Test
@@ -39,6 +38,7 @@ public class SimpleClientTest {
                 System.out.println("Received response: ");
                 System.out.println("Code: " + result.code);
                 System.out.println("msg: " + result.msg);
+                System.out.println("data: " + result.data);
                 super.onSuccess(result);
             }
 
@@ -50,7 +50,7 @@ public class SimpleClientTest {
         };
 
         client.getUrlUpgrade(new UrlUpgradeRequest(
-                "OpggWISrLVRFa5y04LzkwA",
+                "uJ47NPeT7qjLa1gL3sVHqw",
                 1,
                 0,
                 "",
@@ -65,6 +65,8 @@ public class SimpleClientTest {
             System.out.println("Formatted JSON response: \n" + json);
         }
     }
+
+
     @Test
     public void shouldTriggerFailureCallback() throws Exception {
         // 模拟失败响应
@@ -89,7 +91,7 @@ public class SimpleClientTest {
         };
 
         client.getUrlUpgrade(new UrlUpgradeRequest(
-                "123123123",
+                "uJ47NPeT7qjLa1gL3sVHqw",
                 1,
                 0,
                 "",
