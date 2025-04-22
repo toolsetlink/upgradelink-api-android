@@ -1,15 +1,11 @@
 package com.toolsetlink.upgradelink.api;
 
-import com.google.gson.Gson;
 import com.toolsetlink.upgradelink.api.models.*;
-import com.toolsetlink.upgradelink.api.Client.Callback;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.*;
+import java.io.IOException;
 
 public class SimpleClientTest {
 
@@ -18,114 +14,79 @@ public class SimpleClientTest {
     @Before
     public void setUp() {
         Config config = new Config();
-        String accessKey = "mui2W50H1j-OC4xD6PgQag";
-        config.setAccessKey(accessKey);
-        String secretKey = "PEbdHFGC0uO_Pch7XWBQTMsFRxKPQAM2565eP8LJ3gc";
-        config.setSecretKey(secretKey);
+        config.accessKey = "mui2W50H1j-OC4xD6PgQag";
+        config.secretKey = "PEbdHFGC0uO_Pch7XWBQTMsFRxKPQAM2565eP8LJ3gc";
         client = new Client(config);
     }
 
     @Test
-    public void shouldTriggerSuccessCallback() throws Exception {
-
-        CountDownLatch latch = new CountDownLatch(1);
-
-        // 使用带打印功能的回调
-        TestCallback callback = new TestCallback(latch) {
-            @Override
-            public void onSuccess(UrlUpgradeResponse result) {
-                // 打印返回参数
-                System.out.println("Received response: ");
-                System.out.println("Code: " + result.code);
-                System.out.println("msg: " + result.msg);
-                System.out.println("data: " + result.data);
-                super.onSuccess(result);
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                System.out.println("Error: " + e.getMessage());
-                super.onFailure(e);
-            }
-        };
-
-        client.getUrlUpgrade(new UrlUpgradeRequest(
+    public void getUrlUpgrade_shouldCallCallbackOnSuccess() throws IOException {
+        UrlUpgradeRequest request = new UrlUpgradeRequest(
                 "uJ47NPeT7qjLa1gL3sVHqw",
                 1,
                 0,
                 "",
                 ""
-        ), callback);
+        );
 
-        assertTrue(latch.await(1, TimeUnit.SECONDS));
+        // 创建一个匿名的 Callback 实现
+        Client.Callback<UrlUpgradeResponse> callback = new Client.Callback<UrlUpgradeResponse>() {
+            @Override
+            public void onSuccess(UrlUpgradeResponse response) {
+                System.out.println("UrlUpgrade 请求成功，响应结果: " + response);
+                // 验证响应是否成功
+                assert response != null;
+            }
 
-        // 也可以通过Gson格式化输出
-        if (callback.result != null) {
-            String json = new Gson().toJson(callback.result);
-            System.out.println("Formatted JSON response: \n" + json);
-        }
+            @Override
+            public void onFailure(Exception e) {
+                System.out.println("UrlUpgrade 请求失败，异常信息: " + e.getMessage());
+                assert false : "Request failed: Exception: " + e.getMessage();
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                System.out.println("UrlUpgrade 请求失败，异常信息: " + t.getMessage());
+                assert false : "Request failed: Throwable: " + t.getMessage();
+            }
+
+        };
+
+        client.getUrlUpgrade(request, callback);
     }
-
 
     @Test
-    public void shouldTriggerFailureCallback() throws Exception {
-        // 模拟失败响应
-        CountDownLatch latch = new CountDownLatch(1);
-
-        // 使用带打印功能的回调
-        TestCallback callback = new TestCallback(latch) {
-            @Override
-            public void onSuccess(UrlUpgradeResponse result) {
-                // 打印返回参数
-                System.out.println("Received response: ");
-                System.out.println("Code: " + result.code);
-                System.out.println("msg: " + result.msg);
-                super.onSuccess(result);
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                System.out.println("Error: " + e.getMessage());
-                super.onFailure(e);
-            }
-        };
-
-        client.getUrlUpgrade(new UrlUpgradeRequest(
+    public void getFileUpgrade_shouldCallCallbackOnSuccess() throws IOException {
+        FileUpgradeRequest request = new FileUpgradeRequest(
                 "uJ47NPeT7qjLa1gL3sVHqw",
                 1,
                 0,
                 "",
                 ""
-        ), callback);
+        );
 
-        assertTrue(latch.await(1, TimeUnit.SECONDS));
+        // 创建一个匿名的 Callback 实现
+        Client.Callback<FileUpgradeResponse> callback = new Client.Callback<FileUpgradeResponse>() {
+            @Override
+            public void onSuccess(FileUpgradeResponse response) {
+                System.out.println("FileUpgrade 请求成功，响应结果: " + response);
+                // 验证响应是否成功
+                assert response != null;
+            }
 
-        // 也可以通过Gson格式化输出
-        if (callback.result != null) {
-            String json = new Gson().toJson(callback.result);
-            System.out.println("Formatted JSON response: \n" + json);
-        }
-    }
+            @Override
+            public void onFailure(Exception e) {
+                System.out.println("FileUpgrade 请求失败，异常信息: " + e.getMessage());
+                assert false : "Request failed: Exception: " + e.getMessage();
+            }
 
-    private static class TestCallback implements Callback<UrlUpgradeResponse> {
-        final CountDownLatch latch;
-        UrlUpgradeResponse result;
-        Exception error;
+            @Override
+            public void onFailure(Throwable t) {
+                System.out.println("FileUpgrade 请求失败，异常信息: " + t.getMessage());
+                assert false : "Request failed:  Throwable: " + t.getMessage();
+            }
+        };
 
-        TestCallback(CountDownLatch latch) {
-            this.latch = latch;
-        }
-
-        @Override
-        public void onSuccess(UrlUpgradeResponse result) {
-            this.result = result;
-            latch.countDown();
-        }
-
-        @Override
-        public void onFailure(Exception e) {
-            this.error = e;
-            latch.countDown();
-        }
+        client.getFileUpgrade(request, callback);
     }
 }
