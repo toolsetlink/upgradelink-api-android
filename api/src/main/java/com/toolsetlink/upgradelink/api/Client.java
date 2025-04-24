@@ -19,7 +19,7 @@ import okhttp3.Response;
 
 public class Client {
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-    private static final OkHttpClient client = new OkHttpClient();
+    private static final OkHttpClient httpClient = new OkHttpClient();
     private static final Gson gson = new Gson();
     private static final ExecutorService executorService = Executors.newFixedThreadPool(5);
     private static final String DEFAULT_PROTOCOL = "HTTP";
@@ -33,8 +33,14 @@ public class Client {
     public Client(Config config) {
         this._accessKey = config.accessKey;
         this._secretKey = config.secretKey;
+
         this._protocol = Objects.equals(config.protocol, "HTTPS") ? "HTTPS" : DEFAULT_PROTOCOL;
-        this._endpoint = Objects.equals(config.endpoint, "") ? DEFAULT_ENDPOINT : config.endpoint;
+
+        if (Objects.equals(config.endpoint, "") || config.endpoint == null ) {
+            this._endpoint = DEFAULT_ENDPOINT;
+        } else {
+            this._endpoint = config.endpoint;
+        }
     }
 
     public void getUrlUpgrade(UrlUpgradeRequest request, Callback<UrlUpgradeResponse> callback) {
@@ -46,6 +52,7 @@ public class Client {
     }
 
     private <T> void executeRequest(Object request, String uri, Callback<T> callback, Class<T> responseClass) {
+
         executorService.submit(() -> {
             try {
                 T result = performRequest(request, uri, responseClass);
@@ -55,6 +62,7 @@ public class Client {
             } catch (Exception e) {
                 callback.onFailure(new Exception("Unexpected error: " + e.getMessage()));
             }
+
         });
     }
 
@@ -73,19 +81,28 @@ public class Client {
         headers.put("X-Signature", signature);
 
         RequestBody requestBody = RequestBody.create(bodyStr, JSON);
+
         Request httpRequest = new Request.Builder()
                 .url(_protocol + "://" + _endpoint + uri)
                 .post(requestBody)
                 .headers(okhttp3.Headers.of(headers))
                 .build();
 
-        try (Response response = client.newCall(httpRequest).execute()) {
+        try (Response response = httpClient.newCall(httpRequest).execute()) {
+
             if (response.isSuccessful()) {
+                assert response.body() != null;
                 String responseData = response.body().string();
-                return gson.fromJson(responseData, responseClass);
+
+                try {
+                    return gson.fromJson(responseData, responseClass);
+                } catch (com.google.gson.JsonSyntaxException e) {
+                    throw new Exception("JSON parsing error: " + e.getMessage());
+                }
             } else {
+                assert response.body() != null;
                 String responseData = response.body().string();
-                throw new IOException("Unexpected msg " + responseData);
+                throw new IOException("Unexpected msg: " + responseData);
             }
         }
     }
@@ -93,18 +110,7 @@ public class Client {
     public interface Callback<T> {
         void onSuccess(T result);
         void onFailure(Exception e);
-
         void onFailure(Throwable t);
     }
 
-    public static void shutdownExecutorService() {
-        executorService.shutdown();
-        try {
-            if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
-                executorService.shutdownNow();
-            }
-        } catch (InterruptedException e) {
-            executorService.shutdownNow();
-        }
-    }
-}    
+}
