@@ -9,19 +9,20 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Client {
+    private static final Logger LOGGER = Logger.getLogger(Client.class.getName());
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     private static final OkHttpClient httpClient = new OkHttpClient();
     private static final Gson gson = new Gson();
-    private static final ExecutorService executorService = Executors.newFixedThreadPool(5);
+    private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private static final String DEFAULT_PROTOCOL = "HTTP";
     private static final String DEFAULT_ENDPOINT = "api.upgrade.toolsetlink.com";
 
@@ -33,36 +34,35 @@ public class Client {
     public Client(Config config) {
         this._accessKey = config.accessKey;
         this._secretKey = config.secretKey;
-
         this._protocol = Objects.equals(config.protocol, "HTTPS") ? "HTTPS" : DEFAULT_PROTOCOL;
-
-        if (Objects.equals(config.endpoint, "") || config.endpoint == null ) {
-            this._endpoint = DEFAULT_ENDPOINT;
-        } else {
-            this._endpoint = config.endpoint;
-        }
+        this._endpoint = Objects.requireNonNullElse(config.endpoint, DEFAULT_ENDPOINT);
     }
 
-    public void getUrlUpgrade(UrlUpgradeRequest request, Callback<UrlUpgradeResponse> callback) {
+    public UrlUpgradeResponse getUrlUpgrade(UrlUpgradeRequest request) throws Exception {
+        return performRequest(request, "/v1/url/upgrade", UrlUpgradeResponse.class);
+    }
+
+    public FileUpgradeResponse getFileUpgrade(FileUpgradeRequest request) throws Exception {
+        return performRequest(request, "/v1/file/upgrade", FileUpgradeResponse.class);
+    }
+
+    public void getUrlUpgradeAsync(UrlUpgradeRequest request, Callback<UrlUpgradeResponse> callback) {
         executeRequest(request, "/v1/url/upgrade", callback, UrlUpgradeResponse.class);
     }
 
-    public void getFileUpgrade(FileUpgradeRequest request, Callback<FileUpgradeResponse> callback) {
+    public void getFileUpgradeAsync(FileUpgradeRequest request, Callback<FileUpgradeResponse> callback) {
         executeRequest(request, "/v1/file/upgrade", callback, FileUpgradeResponse.class);
     }
 
     private <T> void executeRequest(Object request, String uri, Callback<T> callback, Class<T> responseClass) {
-
         executorService.submit(() -> {
             try {
                 T result = performRequest(request, uri, responseClass);
                 callback.onSuccess(result);
-            } catch (IOException e) {
-                callback.onFailure(new IOException("Network error: " + e.getMessage()));
             } catch (Exception e) {
-                callback.onFailure(new Exception("Unexpected error: " + e.getMessage()));
+                LOGGER.log(Level.SEVERE, "Request execution failed", e);
+                callback.onFailure(e);
             }
-
         });
     }
 
@@ -89,11 +89,9 @@ public class Client {
                 .build();
 
         try (Response response = httpClient.newCall(httpRequest).execute()) {
-
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 String responseData = response.body().string();
-
                 try {
                     return gson.fromJson(responseData, responseClass);
                 } catch (com.google.gson.JsonSyntaxException e) {
@@ -109,8 +107,6 @@ public class Client {
 
     public interface Callback<T> {
         void onSuccess(T result);
-        void onFailure(Exception e);
         void onFailure(Throwable t);
     }
-
 }
