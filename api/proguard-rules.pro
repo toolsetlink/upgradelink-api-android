@@ -19,3 +19,15 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Gson混淆规则
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class com.google.gson.** { *; }
+-keep class com.google.gson.reflect.TypeToken { *; }
+-keep class * extends com.google.gson.reflect.TypeToken
+-keepclassmembers class * {
+  @com.google.gson.annotations.SerializedName <fields>;
+}
+# 保留模型类不被混淆（请根据实际包名修改）
+-keep class com.example.upgradelink.model.** { *; }
