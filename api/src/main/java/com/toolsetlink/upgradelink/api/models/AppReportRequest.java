@@ -1,17 +1,42 @@
 package com.toolsetlink.upgradelink.api.models;
 
-public class AppReportRequest {
-    public String eventType;
-    public Integer versionCode;
-    public Integer appointVersionCode;
-    public String devModelKey;
-    public String devKey;
+import com.google.gson.annotations.SerializedName;
 
-    public AppReportRequest(String fileKey, Integer versionCode, Integer appointVersionCode, String devModelKey, String devKey) {
-        this.eventType = fileKey;
-        this.versionCode = versionCode;
-        this.appointVersionCode = appointVersionCode;
-        this.devModelKey = devModelKey;
-        this.devKey = devKey;
+public class AppReportRequest {
+    @SerializedName("timestamp")
+    public String timestamp;
+    @SerializedName("appKey")
+    public String appKey;
+    @SerializedName("eventData")
+    public EventData eventData;
+
+    public String eventType;
+
+    public AppReportRequest(String eventType, String timestamp, String appKey) {
+        this.eventType = eventType;
+        this.timestamp = timestamp;
+        this.appKey = appKey;
+        this.eventData = new EventData();
+    }
+
+    public static class EventData {
+        @SerializedName("launchTime")
+        public String launchTime;
+        @SerializedName("downloadVersionCode")
+        public Integer downloadVersionCode;
+        @SerializedName("upgradeVersionCode")
+        public Integer upgradeVersionCode;
+        @SerializedName("code")
+        public Integer code;
+        @SerializedName("versionCode")
+        public Integer versionCode;
+        @SerializedName("devModelKey")
+        public String devModelKey;
+        @SerializedName("devKey")
+        public String devKey;
+        @SerializedName("target")
+        public String target;
+        @SerializedName("arch")
+        public String arch;
     }
 }

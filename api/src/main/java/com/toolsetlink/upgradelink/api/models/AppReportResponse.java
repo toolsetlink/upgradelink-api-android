@@ -7,7 +7,13 @@ public class AppReportResponse {
     public String msg;
     public String docs;
     public String traceId;
-    public FileUpgradeDataResponse data;
+
+    public AppReportResponse(Integer code, String msg, String docs, String traceId) {
+        this.code = code;
+        this.msg = msg;
+        this.docs = docs;
+        this.traceId = traceId;
+    }
 
     @NonNull
     @Override
@@ -17,7 +23,6 @@ public class AppReportResponse {
                 ", msg='" + msg + '\'' +
                 ", docs='" + docs + '\'' +
                 ", traceId='" + traceId + '\'' +
-                ", data=" + data +
                 '}';
     }
 

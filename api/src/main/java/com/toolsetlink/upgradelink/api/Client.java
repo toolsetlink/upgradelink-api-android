@@ -50,6 +50,14 @@ public class Client {
         return performRequest(request, "/v1/apk/upgrade", ApkUpgradeResponse.class);
     }
 
+    public AppReportResponse ApkUpgrade(AppReportUpgradeRequest request) throws Exception {
+        return performRequest(request, "/v1/app/report", AppReportUpgradeResponse.class);
+    }
+
+    public ConfigurationUpgradeResponse ConfigurationUpgrade(ConfigurationUpgradeRequest request) throws Exception {
+        return performRequest(request, "/v1/configuration/upgrade", ConfigurationUpgradeResponse.class);
+    }
+
     public void UrlUpgradeAsync(UrlUpgradeRequest request, Callback<UrlUpgradeResponse> callback) {
         executeRequest(request, "/v1/url/upgrade", callback, UrlUpgradeResponse.class);
     }
@@ -60,6 +68,14 @@ public class Client {
 
     public void ApkUpgradeAsync(ApkUpgradeRequest request, Callback<ApkUpgradeResponse> callback) {
         executeRequest(request, "/v1/apk/upgrade", callback, ApkUpgradeResponse.class);
+    }
+
+    public void ConfigurationUpgradeAsync(ConfigurationUpgradeRequest request, Callback<ConfigurationUpgradeResponse> callback) {
+        executeRequest(request, "/v1/configuration/upgrade", callback, ConfigurationUpgradeResponse.class);
+    }
+
+    public void AppReportAsync(AppReportRequest request, Callback<AppReportResponse> callback) {
+        executeRequest(request, "/v1/app/report", callback, AppReportResponse.class);
     }
 
     private <T> void executeRequest(Object request, String uri, Callback<T> callback, Class<T> responseClass) {
