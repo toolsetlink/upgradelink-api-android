@@ -23,7 +23,7 @@ public class Client {
     private static final OkHttpClient httpClient = new OkHttpClient();
     private static final Gson gson = new Gson();
     private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private static final String DEFAULT_PROTOCOL = "HTTP";
+    private static final String DEFAULT_PROTOCOL = "HTTPS";
     private static final String DEFAULT_ENDPOINT = "api.upgrade.toolsetlink.com";
 
     private final String _accessKey;
@@ -38,20 +38,28 @@ public class Client {
         this._endpoint = Objects.requireNonNullElse(config.endpoint, DEFAULT_ENDPOINT);
     }
 
-    public UrlUpgradeResponse getUrlUpgrade(UrlUpgradeRequest request) throws Exception {
+    public UrlUpgradeResponse UrlUpgrade(UrlUpgradeRequest request) throws Exception {
         return performRequest(request, "/v1/url/upgrade", UrlUpgradeResponse.class);
     }
 
-    public FileUpgradeResponse getFileUpgrade(FileUpgradeRequest request) throws Exception {
+    public FileUpgradeResponse FileUpgrade(FileUpgradeRequest request) throws Exception {
         return performRequest(request, "/v1/file/upgrade", FileUpgradeResponse.class);
     }
 
-    public void getUrlUpgradeAsync(UrlUpgradeRequest request, Callback<UrlUpgradeResponse> callback) {
+    public ApkUpgradeResponse ApkUpgrade(ApkUpgradeRequest request) throws Exception {
+        return performRequest(request, "/v1/apk/upgrade", ApkUpgradeResponse.class);
+    }
+
+    public void UrlUpgradeAsync(UrlUpgradeRequest request, Callback<UrlUpgradeResponse> callback) {
         executeRequest(request, "/v1/url/upgrade", callback, UrlUpgradeResponse.class);
     }
 
-    public void getFileUpgradeAsync(FileUpgradeRequest request, Callback<FileUpgradeResponse> callback) {
+    public void FileUpgradeAsync(FileUpgradeRequest request, Callback<FileUpgradeResponse> callback) {
         executeRequest(request, "/v1/file/upgrade", callback, FileUpgradeResponse.class);
+    }
+
+    public void ApkUpgradeAsync(ApkUpgradeRequest request, Callback<ApkUpgradeResponse> callback) {
+        executeRequest(request, "/v1/apk/upgrade", callback, ApkUpgradeResponse.class);
     }
 
     private <T> void executeRequest(Object request, String uri, Callback<T> callback, Class<T> responseClass) {
