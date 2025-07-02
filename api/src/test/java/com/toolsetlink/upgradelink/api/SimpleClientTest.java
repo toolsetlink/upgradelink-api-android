@@ -174,4 +174,59 @@ public class SimpleClientTest {
         client.ApkUpgradeAsync(request, callback);
         Assert.assertTrue("测试超时", latch.await(15, TimeUnit.SECONDS));
     }
+
+
+
+
+    @Test
+    public void getConfigurationUpgrade_shouldCallCallbackOnSuccess() throws Exception {
+        ConfigurationUpgradeRequest request = new ConfigurationUpgradeRequest(
+                "q1hfB1VUQaK9VksTZGPU1Q",
+                1,
+                0,
+                "",
+                ""
+        );
+
+        try {
+            ConfigurationUpgradeResponse response = client.ConfigurationUpgrade(request);
+            System.out.println("getConfigurationUpgrade 请求响应: " + response.toString());
+        } catch (Exception e) {
+            // 打印异常堆栈信息
+            e.printStackTrace();
+            // 让测试失败，并给出错误信息
+            Assert.fail("getConfigurationUpgrade 请求失败: " + e.getClass().getSimpleName() + ": " + e.getMessage());
+        }
+    }
+
+
+    @Test
+    public void configurationUpgradeAsync_shouldCallCallbackOnSuccess() throws Exception {
+        ConfigurationUpgradeRequest request = new ConfigurationUpgradeRequest(
+                "q1hfB1VUQaK9VksTZGPU1Q",
+                1,
+                0,
+                "",
+                ""
+        );
+        CountDownLatch latch = new CountDownLatch(1);
+
+        Client.Callback<ConfigurationUpgradeResponse> callback = new Client.Callback<>() {
+            @Override
+            public void onSuccess(ConfigurationUpgradeResponse response) {
+                System.out.println("getConfigurationUpgrade 请求响应: " + response.toString());
+                latch.countDown();
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                t.printStackTrace();
+                Assert.fail("getConfigurationUpgrade 请求失败: " + t.getClass().getSimpleName() + ": " + t.getMessage());
+                latch.countDown();
+            }
+        };
+
+        client.ConfigurationUpgradeAsync(request, callback);
+        Assert.assertTrue("测试超时", latch.await(15, TimeUnit.SECONDS));
+    }
 }

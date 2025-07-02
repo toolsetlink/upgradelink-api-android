@@ -50,8 +50,8 @@ public class Client {
         return performRequest(request, "/v1/apk/upgrade", ApkUpgradeResponse.class);
     }
 
-    public AppReportResponse ApkUpgrade(AppReportUpgradeRequest request) throws Exception {
-        return performRequest(request, "/v1/app/report", AppReportUpgradeResponse.class);
+    public AppReportResponse AppReport(AppReportRequest request) throws Exception {
+        return performRequest(request, "/v1/app/report", AppReportResponse.class);
     }
 
     public ConfigurationUpgradeResponse ConfigurationUpgrade(ConfigurationUpgradeRequest request) throws Exception {
