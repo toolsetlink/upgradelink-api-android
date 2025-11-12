@@ -50,6 +50,10 @@ public class Client {
         return performRequest(request, "/v1/apk/upgrade", ApkUpgradeResponse.class);
     }
 
+    public ApkVersionResponse ApkVersion(ApkVersionRequest request) throws Exception {
+        return performRequest(request, "/v1/apk/version", ApkVersionResponse.class);
+    }
+
     public AppReportResponse AppReport(AppReportRequest request) throws Exception {
         return performRequest(request, "/v1/app/report", AppReportResponse.class);
     }
@@ -68,6 +72,10 @@ public class Client {
 
     public void ApkUpgradeAsync(ApkUpgradeRequest request, Callback<ApkUpgradeResponse> callback) {
         executeRequest(request, "/v1/apk/upgrade", callback, ApkUpgradeResponse.class);
+    }
+
+    public void ApkVersionAsync(ApkVersionRequest request, Callback<ApkVersionResponse> callback) {
+        executeRequest(request, "/v1/apk/version", callback, ApkVersionResponse.class);
     }
 
     public void ConfigurationUpgradeAsync(ConfigurationUpgradeRequest request, Callback<ConfigurationUpgradeResponse> callback) {

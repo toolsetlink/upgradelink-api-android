@@ -176,6 +176,54 @@ public class SimpleClientTest {
     }
 
 
+    @Test
+    public void getApkVersion_shouldCallCallbackOnSuccess() throws Exception {
+        ApkVersionRequest request = new ApkVersionRequest(
+                "isVZBUvkFhv6oHxk_X-D0Q",
+                2
+        );
+
+        try {
+            ApkVersionResponse response = client.ApkVersion(request);
+            System.out.println("getApkVersion 请求响应: " + response.toString());
+        } catch (Exception e) {
+            // 打印异常堆栈信息
+            e.printStackTrace();
+            // 让测试失败，并给出错误信息
+            Assert.fail("getApkVersion 请求失败: " + e.getClass().getSimpleName() + ": " + e.getMessage());
+        }
+    }
+
+
+    @Test
+    public void apkVersionAsync_shouldCallCallbackOnSuccess() throws Exception {
+        ApkVersionRequest request = new ApkVersionRequest(
+                "isVZBUvkFhv6oHxk_X-D0Q",
+                2
+        );
+        CountDownLatch latch = new CountDownLatch(1);
+
+        Client.Callback<ApkVersionResponse> callback = new Client.Callback<>() {
+            @Override
+            public void onSuccess(ApkVersionResponse response) {
+                System.out.println("getApkVersion 请求响应: " + response.toString());
+                latch.countDown();
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                t.printStackTrace();
+                Assert.fail("getApkVersion 请求失败: " + t.getClass().getSimpleName() + ": " + t.getMessage());
+                latch.countDown();
+            }
+        };
+
+        client.ApkVersionAsync(request, callback);
+        Assert.assertTrue("测试超时", latch.await(15, TimeUnit.SECONDS));
+    }
+
+
+
 
 
     @Test

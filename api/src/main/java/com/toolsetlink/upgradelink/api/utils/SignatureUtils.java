@@ -12,29 +12,14 @@ public class SignatureUtils {
 
     @SuppressLint("DefaultLocale")
     public static String timeRFC3339() {
+        // 方案1：使用UTC时间（推荐用于跨时区场景）
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date date = new Date();
         String formattedDate = sdf.format(date);
-
-        // 获取时区偏移量
-        Calendar calendar = Calendar.getInstance();
-        TimeZone timeZone = calendar.getTimeZone();
-        int offsetInMillis = timeZone.getOffset(calendar.getTimeInMillis());
-
-        // 计算小时和分钟的偏移量
-        int offsetHours = Math.abs(offsetInMillis) / (1000 * 60 * 60);
-        int offsetMinutes = Math.abs(offsetInMillis) / (1000 * 60) % 60;
-
-        // 构建时区偏移量字符串
-        String offsetString;
-        if (offsetInMillis >= 0) {
-            offsetString = String.format("+%02d:%02d", offsetHours, offsetMinutes);
-        } else {
-            offsetString = String.format("-%02d:%02d", offsetHours, offsetMinutes);
-        }
-
-        // 拼接日期和时区偏移量
-        return formattedDate + offsetString;
+        
+        // UTC时间使用Z时区标识符
+        return formattedDate + "Z";
     }
 
     // 生成8字节随机数据并转换为16位十六进制字符串
