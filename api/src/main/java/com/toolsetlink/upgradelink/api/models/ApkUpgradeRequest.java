@@ -6,12 +6,14 @@ public class ApkUpgradeRequest {
     public Integer appointVersionCode;
     public String devModelKey;
     public String devKey;
+    public Integer patchAlgo;
 
-    public ApkUpgradeRequest(String apkKey, Integer versionCode, Integer appointVersionCode, String devModelKey, String devKey) {
+    public ApkUpgradeRequest(String apkKey, Integer versionCode, Integer appointVersionCode, String devModelKey, String devKey, Integer patchAlgo) {
         this.apkKey = apkKey;
         this.versionCode = versionCode;
         this.appointVersionCode = appointVersionCode;
         this.devModelKey = devModelKey;
         this.devKey = devKey;
+        this.patchAlgo = patchAlgo;
     }
 }

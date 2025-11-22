@@ -130,7 +130,8 @@ public class SimpleClientTest {
                 1,
                 0,
                 "",
-                ""
+                "",
+                0
         );
 
         try {
@@ -152,7 +153,8 @@ public class SimpleClientTest {
                 1,
                 0,
                 "",
-                ""
+                "",
+                0
         );
         CountDownLatch latch = new CountDownLatch(1);
 

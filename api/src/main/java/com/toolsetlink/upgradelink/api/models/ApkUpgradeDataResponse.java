@@ -9,6 +9,10 @@ public class ApkUpgradeDataResponse {
     public String urlPath;
     public Integer urlFileSize;
     public String urlFileMd5;
+    public Integer patchAlgo;
+    public String patchUrlPath;
+    public Integer patchUrlFileSize;
+    public String patchUrlFileMd5;
     public Integer upgradeType;
     public String promptUpgradeContent;
 
@@ -22,6 +26,10 @@ public class ApkUpgradeDataResponse {
                 ", urlPath='" + urlPath + '\'' +
                 ", urlFileSize='" + urlFileSize + '\'' +
                 ", urlFileMd5='" + urlFileMd5 + '\'' +
+                ", patchAlgo=" + patchAlgo +
+                ", patchUrlPath='" + patchUrlPath + '\'' +
+                ", patchUrlFileSize='" + patchUrlFileSize + '\'' +
+                ", patchUrlFileMd5='" + patchUrlFileMd5 + '\'' +
                 ", upgradeType=" + upgradeType +
                 ", promptUpgradeContent='" + promptUpgradeContent + '\'' +
                 '}';
